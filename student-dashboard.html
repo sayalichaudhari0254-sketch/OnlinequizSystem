@@ -1,0 +1,330 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        
+body {
+    background: #ffffff;
+    font-family: "Segoe UI", Arial, sans-serif;
+    margin: 0;
+    color: #302044;
+}
+
+header {
+    background: #260747;
+    color: white;
+    padding: 18px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.site-title {
+    color: #ffffff !important;
+    margin: 0;
+    font-size: 28px;
+}
+
+header nav {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+header nav a {
+    color: white;
+    text-decoration: none;
+    padding: 10px 16px;
+    border-radius: 7px;
+    transition: 0.3s;
+}
+
+header nav a:hover {
+    background: #51217a;
+}
+
+.dashboard {
+    max-width: 1050px;
+    margin: 30px auto;
+    padding: 20px;
+}
+
+.welcome {
+    background: linear-gradient(135deg, #260747, #542080);
+    color: white;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px #26074720;
+}
+
+.welcome h1 {
+    color: white;
+    margin-top: 0;
+    font-size: 30px;
+}
+
+.welcome p {
+    line-height: 1.7;
+}
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin: 25px 0;
+}
+
+.card {
+    background: white;
+    padding: 24px;
+    border-radius: 14px;
+    border: 1px solid #eee5f7;
+    box-shadow: 0 5px 18px #26074712;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 9px 24px #26074720;
+}
+
+.card h3 {
+    color: #542080;
+    font-size: 16px;
+}
+
+.card h2 {
+    color: #260747;
+    font-size: 30px;
+    margin-bottom: 0;
+}
+
+.history {
+    background: white;
+    padding: 24px;
+    border-radius: 14px;
+    border: 1px solid #eee5f7;
+    box-shadow: 0 5px 18px #26074712;
+    overflow-x: auto;
+}
+
+.history h2 {
+    color: #351052;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 500px;
+}
+
+th, td {
+    padding: 14px;
+    border-bottom: 1px solid #eee5f7;
+    text-align: left;
+}
+
+th {
+    background: #351052;
+    color: white;
+}
+
+tbody tr:hover {
+    background: #f8f3ff;
+}
+
+.actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 24px;
+}
+
+.actions a {
+    display: inline-block;
+    padding: 12px 20px;
+    background: #351052;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: 0.3s;
+}
+
+.actions a:hover {
+    background: #60318a;
+    transform: translateY(-2px);
+}
+
+#message {
+    margin: 15px 0;
+    color: #542080;
+}
+
+@media (max-width: 600px) {
+    header {
+        padding: 18px;
+    }
+
+    .site-title {
+        font-size: 23px;
+    }
+
+    .dashboard {
+        padding: 14px;
+        margin: 15px auto;
+    }
+
+    .welcome {
+        padding: 22px;
+    }
+}
+
+    </style>
+</head>
+
+<body>
+
+<header>
+    
+    <h1 class="site-title">Online Quiz System</h1>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="quiz.html">Take Quiz</a>
+        <a href="login.html" onclick="localStorage.removeItem('studentEmail')">
+            Logout
+        </a>
+    </nav>
+</header>
+
+<main class="dashboard">
+
+    <section class="welcome">
+        <h1>Student Dashboard</h1>
+        <p>Welcome to your quiz dashboard!</p>
+        <p>Email: <strong id="studentEmail">Loading...</strong></p>
+    </section>
+
+    <section class="cards">
+        <div class="card">
+            <h3>Quizzes Attempted</h3>
+            <h2 id="totalQuizzes">0</h2>
+        </div>
+
+        <div class="card">
+            <h3>Latest Score</h3>
+            <h2 id="latestScore">--</h2>
+        </div>
+
+        <div class="card">
+            <h3>Latest Percentage</h3>
+            <h2 id="latestPercentage">--</h2>
+        </div>
+    </section>
+
+    <section class="history">
+        <h2>Previous Quiz Results</h2>
+        <p id="message">Loading results...</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Quiz No.</th>
+                    <th>Total Questions</th>
+                    <th>Score</th>
+                    <th>Percentage</th>
+                </tr>
+            </thead>
+            <tbody id="resultsBody"></tbody>
+        </table>
+    </section>
+
+    <div class="actions">
+        <a href="quiz.html">Take Quiz Again</a>
+        <a href="index.html">Home</a>
+    </div>
+
+</main>
+
+<script>
+const email = localStorage.getItem("studentEmail");
+
+const emailElement = document.getElementById("studentEmail");
+const message = document.getElementById("message");
+const resultsBody = document.getElementById("resultsBody");
+
+if (!email) {
+    emailElement.textContent = "Not logged in";
+    message.textContent = "Please log in first to view your results.";
+} else {
+    emailElement.textContent = email;
+    loadResults();
+}
+
+async function loadResults() {
+    try {
+        const response = await fetch(
+            "http://localhost:8080/api/results/" +
+            encodeURIComponent(email)
+        );
+
+        if (!response.ok) {
+            throw new Error("Could not load results");
+        }
+
+        const results = await response.json();
+
+        if (!Array.isArray(results) || results.length === 0) {
+            message.textContent = "No quiz results found. Take your first quiz!";
+            return;
+        }
+
+        document.getElementById("totalQuizzes").textContent =
+            results.length;
+
+        const latest = results[0];
+
+        document.getElementById("latestScore").textContent =
+            latest.score + " / " + latest.totalQuestions;
+
+        document.getElementById("latestPercentage").textContent =
+            Number(latest.percentage).toFixed(2) + "%";
+
+        resultsBody.replaceChildren();
+
+        results.forEach((result, index) => {
+            const row = document.createElement("tr");
+
+            [
+                index + 1,
+                result.totalQuestions,
+                result.score + " / " + result.totalQuestions,
+                Number(result.percentage).toFixed(2) + "%"
+            ].forEach(value => {
+                const cell = document.createElement("td");
+                cell.textContent = value;
+                row.appendChild(cell);
+            });
+
+            resultsBody.appendChild(row);
+        });
+
+        message.textContent = "Your quiz results are loaded.";
+
+    } catch (error) {
+        console.error(error);
+        message.textContent =
+            "Results could not load. Check the backend and API.";
+    }
+}
+</script>
+
+</body>
+</html>

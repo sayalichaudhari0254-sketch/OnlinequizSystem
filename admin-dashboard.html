@@ -1,0 +1,428 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Online Quiz System</title>
+    <link rel="stylesheet" href="admin-dashboard.css">
+</head>
+<body>
+
+    <header class="topbar">
+        <div class="brand">
+            <div class="brand-icon">Q</div>
+            <div>
+                <h1>Online Quiz System</h1>
+                <p>Administration Panel</p>
+            </div>
+        </div>
+
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="admin-dashboard.html" class="active">Dashboard</a>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </nav>
+    </header>
+
+    <main class="container">
+        <section class="welcome">
+            <div>
+                <p class="eyebrow">ADMINISTRATION</p>
+                <h2>Dashboard Overview</h2>
+                <p class="subtitle">Monitor student performance and quiz results.</p>
+            </div>
+            <button class="refresh-btn" onclick="loadResults()">
+                ↻ Refresh Results
+            </button>
+        </section>
+
+        <p id="message" role="status" aria-live="polite"></p>
+
+        <section class="stats">
+            <div class="stat-card">
+                <div class="stat-icon purple">♙</div>
+                <p>Total Attempts</p>
+                <h3 id="totalAttempts">0</h3>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon blue">✓</div>
+                <p>Total Marks</p>
+                <h3 id="totalScore">0</h3>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon pink">%</div>
+                <p>Average Percentage</p>
+                <h3 id="averagePercentage">0%</h3>
+            </div>
+        </section>
+           
+<!-- Questions Management -->
+<section class="results-card questions-card">
+    <div class="results-heading">
+        <div>
+            <h2>Manage Questions</h2>
+            <p>Add, edit and delete quiz questions</p>
+        </div>
+        <button class="refresh-btn" onclick="loadQuestions()">
+            ↻ Refresh Questions
+        </button>
+    </div>
+
+    <form id="questionForm" class="question-form">
+        <input type="hidden" id="questionId">
+
+        <label for="questionText">Question</label>
+        <textarea id="questionText" maxlength="500" required
+            placeholder="Enter question"></textarea>
+
+        <div class="question-options">
+            <input id="optionA" maxlength="200" required
+                placeholder="Option A">
+            <input id="optionB" maxlength="200" required
+                placeholder="Option B">
+            <input id="optionC" maxlength="200" required
+                placeholder="Option C">
+            <input id="optionD" maxlength="200" required
+                placeholder="Option D">
+        </div>
+
+        <label for="correctAnswer">Correct Answer</label>
+        <select id="correctAnswer" required>
+            <option value="">Select correct option</option>
+            <option value="A">Option A</option>
+            <option value="B">Option B</option>
+            <option value="C">Option C</option>
+            <option value="D">Option D</option>
+        </select>
+
+        <div class="question-actions">
+            <button type="submit" class="refresh-btn" id="saveQuestionBtn">
+                Add Question
+            </button>
+            <button type="button" class="cancel-btn"
+                onclick="resetQuestionForm()">Cancel</button>
+        </div>
+    </form>
+
+    <p id="questionMessage" role="status" aria-live="polite"></p>
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Question</th>
+                    <th>Correct Answer</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="questions">
+                <tr><td colspan="4" class="empty">Loading questions...</td></tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+        <section class="results-card">
+            <div class="results-heading">
+                <div>
+                    <h2>Student Results</h2>
+                    <p>Quiz attempts and performance details</p>
+                </div>
+
+                <span class="live-badge">● Results</span>
+            </div>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Email</th>
+                            <th>Score</th>
+                            <th>Percentage</th>
+                            <th>Performance</th>
+                        </tr>
+                    </thead>
+                    <tbody id="results">
+                        <tr>
+                            <td colspan="4" class="empty">
+                                Click Refresh Results to load data.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        Online Quiz System &copy; 2026
+    </footer>
+
+    <script>
+        async function loadResults() {
+            const tbody = document.getElementById("results");
+            const message = document.getElementById("message");
+
+            tbody.replaceChildren();
+            message.textContent = "Loading results...";
+
+            try {
+                const response = await fetch(
+                    "http://localhost:8080/api/admin/results"
+                );
+
+                if (!response.ok) {
+                    throw new Error("Results load failed");
+                }
+
+                const data = await response.json();
+
+                if (!Array.isArray(data)) {
+                    throw new Error("Unexpected API response");
+                }
+
+                let totalScore = 0;
+                let totalPercentage = 0;
+
+                data.forEach(item => {
+                    const row = document.createElement("tr");
+
+                    const emailCell = document.createElement("td");
+                    emailCell.textContent = item.email ?? "N/A";
+
+                    const scoreCell = document.createElement("td");
+                    scoreCell.textContent = item.score ?? 0;
+
+                    const percentageCell = document.createElement("td");
+                    const percentage = Number(item.percentage) || 0;
+                    percentageCell.textContent = percentage.toFixed(2) + "%";
+
+                    const performanceCell = document.createElement("td");
+                    const badge = document.createElement("span");
+                    badge.className = "performance";
+
+                    if (percentage >= 75) {
+                        badge.classList.add("excellent");
+                        badge.textContent = "Excellent";
+                    } else if (percentage >= 40) {
+                        badge.classList.add("average");
+                        badge.textContent = "Average";
+                    } else {
+                        badge.classList.add("low");
+                        badge.textContent = "Needs Improvement";
+                    }
+
+                    performanceCell.appendChild(badge);
+
+                    row.append(
+                        emailCell,
+                        scoreCell,
+                        percentageCell,
+                        performanceCell
+                    );
+
+                    tbody.appendChild(row);
+
+                    totalScore += Number(item.score) || 0;
+                    totalPercentage += percentage;
+                });
+
+                document.getElementById("totalAttempts").textContent =
+                    data.length;
+
+                document.getElementById("totalScore").textContent =
+                    totalScore;
+
+                document.getElementById("averagePercentage").textContent =
+                    data.length
+                        ? (totalPercentage / data.length).toFixed(2) + "%"
+                        : "0%";
+
+                if (data.length === 0) {
+                    const row = document.createElement("tr");
+                    const cell = document.createElement("td");
+                    cell.colSpan = 4;
+                    cell.className = "empty";
+                    cell.textContent = "No student results found.";
+                    row.appendChild(cell);
+                    tbody.appendChild(row);
+                }
+
+                message.textContent = data.length
+                    ? "Results loaded successfully."
+                    : "No results available.";
+
+            } catch (error) {
+                message.textContent =
+                    "Results load nahi zale. Backend API check kara.";
+
+                const row = document.createElement("tr");
+                const cell = document.createElement("td");
+                cell.colSpan = 4;
+                cell.className = "empty";
+                cell.textContent =
+                    "Unable to load results. Check the backend and API.";
+                row.appendChild(cell);
+                tbody.appendChild(row);
+            }
+        }
+          
+const questionAPI = "http://localhost:8080/api/admin/questions";
+
+async function loadQuestions() {
+    const tbody = document.getElementById("questions");
+    const message = document.getElementById("questionMessage");
+
+    tbody.replaceChildren();
+    message.textContent = "Loading questions...";
+
+    try {
+        const response = await fetch(questionAPI);
+        if (!response.ok) throw new Error("Could not load questions");
+
+        const data = await response.json();
+
+        if (!Array.isArray(data)) throw new Error("Invalid response");
+
+        if (data.length === 0) {
+            const row = tbody.insertRow();
+            const cell = row.insertCell();
+            cell.colSpan = 4;
+            cell.className = "empty";
+            cell.textContent = "No questions found. Add your first question.";
+        }
+
+        data.forEach(q => {
+            const row = tbody.insertRow();
+
+            [q.id, q.question_text, q.correct_answer].forEach(value => {
+                const cell = row.insertCell();
+                cell.textContent = value ?? "";
+            });
+
+            const actions = row.insertCell();
+
+            const edit = document.createElement("button");
+            edit.type = "button";
+            edit.textContent = "Edit";
+            edit.className = "edit-btn";
+            edit.addEventListener("click", () => editQuestion(q));
+
+            const del = document.createElement("button");
+            del.type = "button";
+            del.textContent = "Delete";
+            del.className = "delete-btn";
+            del.addEventListener("click", () => deleteQuestion(q.id));
+
+            actions.append(edit, del);
+        });
+
+        message.textContent = `${data.length} question(s) loaded.`;
+    } catch (error) {
+        message.textContent =
+            "Questions load nahi zale. Backend/API check kara.";
+    }
+}
+
+document.getElementById("questionForm").addEventListener("submit",
+    async function (event) {
+        event.preventDefault();
+
+        const id = document.getElementById("questionId").value;
+        const answer = document.getElementById("correctAnswer").value;
+
+        const question = {
+            question_text: document.getElementById("questionText").value.trim(),
+            option_a: document.getElementById("optionA").value.trim(),
+            option_b: document.getElementById("optionB").value.trim(),
+            option_c: document.getElementById("optionC").value.trim(),
+            option_d: document.getElementById("optionD").value.trim(),
+            correct_answer: answer
+        };
+
+        const message = document.getElementById("questionMessage");
+
+        try {
+            const response = await fetch(
+                id ? `${questionAPI}/${id}` : questionAPI,
+                {
+                    method: id ? "PUT" : "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(question)
+                }
+            );
+
+            if (!response.ok) throw new Error("Save failed");
+
+            message.textContent = id
+                ? "Question updated successfully."
+                : "Question added successfully.";
+
+            resetQuestionForm();
+            await loadQuestions();
+        } catch (error) {
+            message.textContent =
+                "Save failed. Backend/API error check kara.";
+        }
+    });
+
+function editQuestion(q) {
+    document.getElementById("questionId").value = q.id;
+    document.getElementById("questionText").value = q.question_text ?? "";
+    document.getElementById("optionA").value = q.option_a ?? "";
+    document.getElementById("optionB").value = q.option_b ?? "";
+    document.getElementById("optionC").value = q.option_c ?? "";
+    document.getElementById("optionD").value = q.option_d ?? "";
+    document.getElementById("correctAnswer").value = q.correct_answer ?? "";
+    document.getElementById("saveQuestionBtn").textContent = "Update Question";
+
+    document.getElementById("questionForm").scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+    });
+}
+
+function resetQuestionForm() {
+    document.getElementById("questionForm").reset();
+    document.getElementById("questionId").value = "";
+    document.getElementById("saveQuestionBtn").textContent = "Add Question";
+}
+
+async function deleteQuestion(id) {
+    if (!confirm("Are you sure you want to delete this question?")) return;
+
+    try {
+        const response = await fetch(`${questionAPI}/${id}`, {
+            method: "DELETE"
+        });
+
+        if (!response.ok) throw new Error("Delete failed");
+
+        document.getElementById("questionMessage").textContent =
+            "Question deleted successfully.";
+
+        resetQuestionForm();
+        await loadQuestions();
+    } catch (error) {
+        document.getElementById("questionMessage").textContent =
+            "Delete failed. Backend/API error check kara.";
+    }
+}
+
+        function logout() {
+            window.location.href = "admin-login.html";
+        }
+
+        // Load results automatically when the page opens.
+        document.addEventListener("DOMContentLoaded", () => {
+    loadResults();
+    loadQuestions();
+});
+    </script>
+
+</body>
+</html>
