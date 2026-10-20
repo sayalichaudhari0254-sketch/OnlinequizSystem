@@ -1,0 +1,338 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Quiz</title>
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        #resultBox {
+            margin-top: 25px;
+            padding: 20px;
+            background: #fff;
+            border-radius: 12px;
+        }
+
+        .timer-box {
+            position: sticky;
+            top: 5px;
+            z-index: 10;
+            background: #1d3557;
+            color: white;
+            padding: 12px;
+            text-align: center;
+            border-radius: 8px;
+            font-size: 20px;
+            font-weight: bold;
+            margin: 15px 0;
+        }
+
+        .timer-warning {
+            background: #b42318;
+        }
+
+        .answer-item {
+            padding: 12px;
+            margin: 12px 0;
+            border-radius: 8px;
+        }
+
+        .correct-answer {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .wrong-answer {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h2>Online Quiz System</h2>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="student-dashboard.html">Dashboard</a>
+        <a href="login.html"
+           onclick="localStorage.removeItem('studentEmail')">Logout</a>
+    </nav>
+</header>
+
+<main class="container">
+    <h1>Java Quiz</h1>
+    <p>Select the correct answer for each question.</p>
+
+    <div class="timer-box" id="timerBox">
+        Time Left: <span id="timer">10:00</span>
+    </div>
+
+    <form id="quizForm">
+
+        <h3>1. Which keyword is used to inherit a class in Java?</h3>
+        <label><input type="radio" name="q1" value="a" required> implements</label><br>
+        <label><input type="radio" name="q1" value="b"> extends</label><br>
+        <label><input type="radio" name="q1" value="c"> inherits</label><br><br>
+
+        <h3>2. Which method is the starting point of a Java program?</h3>
+        <label><input type="radio" name="q2" value="a" required> start()</label><br>
+        <label><input type="radio" name="q2" value="b"> run()</label><br>
+        <label><input type="radio" name="q2" value="c"> main()</label><br><br>
+
+        <h3>3. Which keyword creates an object in Java?</h3>
+        <label><input type="radio" name="q3" value="a" required> new</label><br>
+        <label><input type="radio" name="q3" value="b"> class</label><br>
+        <label><input type="radio" name="q3" value="c"> void</label><br><br>
+
+        <h3>4. Which keyword is used to create a subclass in Java?</h3>
+        <label><input type="radio" name="q4" value="a" required> extends</label><br>
+        <label><input type="radio" name="q4" value="b"> import</label><br>
+        <label><input type="radio" name="q4" value="c"> package</label><br><br>
+
+        <h3>5. Which data type stores true or false?</h3>
+        <label><input type="radio" name="q5" value="a" required> int</label><br>
+        <label><input type="radio" name="q5" value="b"> boolean</label><br>
+        <label><input type="radio" name="q5" value="c"> char</label><br><br>
+
+        <h3>6. Which symbol ends a Java statement?</h3>
+        <label><input type="radio" name="q6" value="a" required> :</label><br>
+        <label><input type="radio" name="q6" value="b"> ,</label><br>
+        <label><input type="radio" name="q6" value="c"> ;</label><br><br>
+
+        <h3>7. Which keyword is used to define a class in Java?</h3>
+        <label><input type="radio" name="q7" value="a" required> class</label><br>
+        <label><input type="radio" name="q7" value="b"> define</label><br>
+        <label><input type="radio" name="q7" value="c"> object</label><br><br>
+
+        <h3>8. Which method is used to print output in Java?</h3>
+        <label><input type="radio" name="q8" value="a" required> printOutput()</label><br>
+        <label><input type="radio" name="q8" value="b"> System.out.println()</label><br>
+        <label><input type="radio" name="q8" value="c"> display()</label><br><br>
+
+        <h3>9. Which keyword is used to make a variable non-reassignable?</h3>
+        <label><input type="radio" name="q9" value="a" required> static</label><br>
+        <label><input type="radio" name="q9" value="b"> final</label><br>
+        <label><input type="radio" name="q9" value="c"> const</label><br><br>
+
+        <h3>10. Which concept allows the same method name with different parameters?</h3>
+        <label><input type="radio" name="q10" value="a" required> Inheritance</label><br>
+        <label><input type="radio" name="q10" value="b"> Encapsulation</label><br>
+        <label><input type="radio" name="q10" value="c"> Method Overloading</label><br><br>
+
+        <button type="submit" id="submitBtn" class="btn">
+            Submit Quiz
+        </button>
+    </form>
+
+    <section id="resultBox" hidden>
+        <h2>Quiz Result</h2>
+        <p id="totalQuestions"></p>
+        <p id="correctAnswers"></p>
+        <p id="wrongAnswers"></p>
+        <p id="score"></p>
+        <p id="percentage"></p>
+        <p id="saveStatus"></p>
+
+        <h2>Answer Review</h2>
+        <div id="answerReview"></div>
+
+        <button type="button" onclick="location.reload()">
+            Try Again
+        </button>
+        <a href="student-dashboard.html" class="btn">
+            View Dashboard
+        </a>
+    </section>
+</main>
+
+<script>
+const quizForm = document.getElementById("quizForm");
+const submitBtn = document.getElementById("submitBtn");
+const timerElement = document.getElementById("timer");
+const timerBox = document.getElementById("timerBox");
+
+const answers = {
+    q1: "b",
+    q2: "c",
+    q3: "a",
+    q4: "a",
+    q5: "b",
+    q6: "c",
+    q7: "a",
+    q8: "b",
+    q9: "b",
+    q10: "c"
+};
+
+const correctText = {
+    q1: "extends",
+    q2: "main()",
+    q3: "new",
+    q4: "extends",
+    q5: "boolean",
+    q6: ";",
+    q7: "class",
+    q8: "System.out.println()",
+    q9: "final",
+    q10: "Method Overloading"
+};
+
+let timeLeft = 10 * 60;
+let quizSubmitted = false;
+let timerInterval;
+
+function updateTimer() {
+    const minutes = Math.floor(timeLeft / 60);
+    const seconds = timeLeft % 60;
+
+    timerElement.textContent =
+        String(minutes).padStart(2, "0") + ":" +
+        String(seconds).padStart(2, "0");
+
+    if (timeLeft <= 60) {
+        timerBox.classList.add("timer-warning");
+    }
+}
+
+function startTimer() {
+    updateTimer();
+
+    timerInterval = setInterval(() => {
+        if (quizSubmitted) {
+            clearInterval(timerInterval);
+            return;
+        }
+
+        timeLeft--;
+        updateTimer();
+
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            quizForm.requestSubmit();
+        }
+    }, 1000);
+}
+
+quizForm.addEventListener("submit", async function(event) {
+    event.preventDefault();
+
+    if (quizSubmitted) return;
+
+    // Manual submit: browser validates required answers.
+    // Timer submit: unanswered questions are allowed.
+    if (timeLeft > 0 && !quizForm.reportValidity()) {
+        return;
+    }
+
+    quizSubmitted = true;
+    clearInterval(timerInterval);
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Quiz Submitted";
+
+    const total = Object.keys(answers).length;
+    let correct = 0;
+
+    const review = document.getElementById("answerReview");
+    review.replaceChildren();
+
+    for (const question in answers) {
+        const selected = quizForm.querySelector(
+            'input[name="' + question + '"]:checked'
+        );
+
+        const isCorrect =
+            selected && selected.value === answers[question];
+
+        if (isCorrect) correct++;
+
+        const item = document.createElement("div");
+        item.className = "answer-item " +
+            (isCorrect ? "correct-answer" : "wrong-answer");
+
+        const status = document.createElement("strong");
+        status.textContent = question.toUpperCase() +
+            (isCorrect ? ": Correct Answer ✓" : ": Wrong / Unanswered ✗");
+
+        const answer = document.createElement("p");
+        answer.textContent = "Correct answer: " + correctText[question];
+
+        item.appendChild(status);
+        item.appendChild(answer);
+        review.appendChild(item);
+    }
+
+    const wrong = total - correct;
+    const percentage = (correct / total) * 100;
+
+    document.getElementById("totalQuestions").textContent =
+        "Total Questions: " + total;
+
+    document.getElementById("correctAnswers").textContent =
+        "Correct Answers: " + correct;
+
+    document.getElementById("wrongAnswers").textContent =
+        "Wrong / Unanswered: " + wrong;
+
+    document.getElementById("score").textContent =
+        "Your Score: " + correct + " / " + total;
+
+    document.getElementById("percentage").textContent =
+        "Percentage: " + percentage.toFixed(2) + "%";
+
+    document.getElementById("resultBox").hidden = false;
+
+    quizForm.querySelectorAll("input").forEach(input => {
+        input.disabled = true;
+    });
+
+    submitBtn.disabled = true;
+
+    const saveStatus = document.getElementById("saveStatus");
+    const email = localStorage.getItem("studentEmail");
+
+    if (!email) {
+        saveStatus.textContent =
+            "Score calculated, but email not found. Please log in again.";
+        return;
+    }
+
+    saveStatus.textContent = "Saving result...";
+
+    try {
+        const response = await fetch(
+            "http://localhost:8080/api/results",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    email: email,
+                    totalQuestions: total,
+                    score: correct,
+                    percentage: percentage
+                })
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error("Score save failed: " + response.status);
+        }
+
+        saveStatus.textContent = "Result saved successfully!";
+
+    } catch (error) {
+        console.error(error);
+        saveStatus.textContent =
+            "Result could not be saved. Check that backend and MySQL are running.";
+    }
+});
+
+startTimer();
+</script>
+
+</body>
+</html>

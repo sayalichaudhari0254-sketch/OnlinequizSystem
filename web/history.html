@@ -1,0 +1,81 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Score History</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h2>Online Quiz System</h2>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="quiz.html">Quiz</a>
+            <a href="login.html">Logout</a>
+        </nav>
+    </header>
+
+    <main class="container">
+        <h1>My Score History</h1>
+        <div id="history">Loading scores...</div>
+    </main>
+
+    <script>
+    async function loadHistory() {
+        const email = localStorage.getItem("studentEmail");
+        const history = document.getElementById("history");
+
+        if (!email) {
+            history.textContent = "Please login first.";
+            return;
+        }
+
+        try {
+            const response = await fetch(
+                "http://localhost:8080/api/results/" +
+                encodeURIComponent(email)
+            );
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.message || "Could not load scores.");
+            }
+
+            if (data.length === 0) {
+                history.textContent = "No quiz results found.";
+                return;
+            }
+
+            history.innerHTML = "";
+
+            data.forEach((item, index) => {
+                const card = document.createElement("div");
+                card.className = "container";
+
+                const heading = document.createElement("h3");
+                heading.textContent = "Attempt " + (index + 1);
+
+                const score = document.createElement("p");
+                score.textContent =
+                    "Score: " + item.score + " / " + item.total_questions;
+
+                const percentage = document.createElement("p");
+                percentage.textContent =
+                    "Percentage: " + item.percentage + "%";
+
+                card.append(heading, score, percentage);
+                history.appendChild(card);
+            });
+
+        } catch (error) {
+            history.textContent = error.message;
+        }
+    }
+
+    loadHistory();
+    </script>
+</body>
+</html>

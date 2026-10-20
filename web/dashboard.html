@@ -1,0 +1,105 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+    <h2>Online Quiz System</h2>
+    <nav>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="quiz.html">Quiz</a>
+        <a href="history.html">Score History</a>
+        <a href="#" onclick="logout()">Logout</a>
+    </nav>
+</header>
+
+<main class="container">
+    <h1>Student Dashboard</h1>
+
+    <h3 id="studentEmail">Loading...</h3>
+
+    <div class="container">
+        <h3>Total Attempts</h3>
+        <p id="attempts">0</p>
+    </div>
+
+    <div class="container">
+        <h3>Latest Score</h3>
+        <p id="latestScore">Loading...</p>
+    </div>
+
+    <div class="container">
+        <h3>Latest Percentage</h3>
+        <p id="percentage">Loading...</p>
+    </div>
+
+    <button onclick="location.href='quiz.html'">
+        Start Quiz
+    </button>
+</main>
+
+<script>
+async function loadDashboard() {
+    const email = localStorage.getItem("studentEmail");
+
+    if (!email) {
+        alert("Please login first!");
+        location.href = "login.html";
+        return;
+    }
+
+    document.getElementById("studentEmail").textContent = email;
+
+    try {
+        const response = await fetch(
+            "http://localhost:8080/api/results/" +
+            encodeURIComponent(email)
+        );
+
+        if (!response.ok) {
+            throw new Error("Could not load dashboard data.");
+        }
+
+        const data = await response.json();
+
+        document.getElementById("attempts").textContent =
+            data.length;
+
+        if (data.length === 0) {
+            document.getElementById("latestScore").textContent =
+                "No quiz attempted yet";
+            document.getElementById("percentage").textContent = "0%";
+            return;
+        }
+
+        const latest = data[0];
+
+        document.getElementById("latestScore").textContent =
+            latest.score + " / " + latest.total_questions;
+
+        document.getElementById("percentage").textContent =
+            Number(latest.percentage).toFixed(2) + "%";
+
+    } catch (error) {
+        document.getElementById("latestScore").textContent =
+            error.message;
+        document.getElementById("percentage").textContent = "-";
+    }
+}
+
+function logout() {
+    localStorage.removeItem("studentEmail");
+    location.href = "login.html";
+}
+
+loadDashboard();
+</script>
+
+</body>
+</html>
