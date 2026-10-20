@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Registration</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <h1>Online Quiz System</h1>
+    </header>
+
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="login.html">Login</a>
+    </nav>
+
+    <main>
+        <h2>Student Registration</h2>
+
+        <form id="registerForm">
+            <p>
+                <input type="text" name="name"
+                       placeholder="Enter Full Name" required>
+            </p>
+
+            <p>
+                <input type="email" name="email"
+                       placeholder="Enter Email" required>
+            </p>
+
+            <p>
+                <input type="password" name="password"
+                       placeholder="Create Password"
+                       required minlength="6">
+            </p>
+
+            <button type="submit" class="btn">Register</button>
+        </form>
+
+        <p id="message"></p>
+
+        <p>Already registered? <a href="login.html">Login here</a></p>
+    </main>
+
+    <script>
+        document.getElementById("registerForm").addEventListener("submit", async function(event) {
+            event.preventDefault();
+
+            const form = new FormData(this);
+            const params = new URLSearchParams(form);
+
+            try {
+                const response = await fetch("http://localhost:8080/api/register", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    body: params.toString()
+                });
+
+                const data = await response.json();
+                document.getElementById("message").textContent =
+                    data.message || "Registration completed.";
+
+            } catch (error) {
+                document.getElementById("message").textContent =
+                    "Backend connection failed. Check backend and CORS.";
+            }
+        });
+    </script>
+
+</body>
+</html>

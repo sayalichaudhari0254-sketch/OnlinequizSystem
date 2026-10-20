@@ -1,0 +1,747 @@
+
+/* ===== Basic Design ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f2f4ff;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* ===== Header ===== */
+header {
+    background: linear-gradient(135deg, #5b4bdb, #8e44ad);
+    color: white;
+    padding: 25px 15px;
+    text-align: center;
+    box-shadow: 0 4px 12px #0002;
+}
+
+header h1 {
+    display: inline-block;
+    background: #ffffff22;
+    padding: 10px 24px;
+    border-radius: 12px;
+    border: 1px solid #ffffff55;
+    margin-bottom: 12px;
+}
+
+/* ===== Navigation ===== */
+nav {
+    margin-top: 12px;
+}
+
+nav a {
+    display: inline-block;
+    color: white;
+    background: #ffffff20;
+    padding: 8px 16px;
+    margin: 5px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: 0.3s ease;
+}
+
+nav a:hover {
+    background: #ffca6a;
+    color: #35256d;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 12px #0003;
+}
+
+/* ===== Main Container ===== */
+.container {
+    width: 92%;
+    max-width: 850px;
+    margin: 30px auto;
+    padding: 25px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px #25205b18;
+}
+
+/* ===== Every Heading Box ===== */
+
+h2 {
+    background: transparent;
+    color: #5136b5;
+    padding: 12px 0;
+    margin: 18px 0;
+    border-left: none;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+h3 {
+    display: block;
+    background: transparent;
+    color: #333333;
+    padding: 7px 0;
+    margin: 10px 0;
+    border-radius: 0;
+}
+
+
+
+p {
+    margin-bottom: 10px;
+}
+
+/* ===== Input Fields ===== */
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0 16px;
+    border: 1px solid #d4d5e8;
+    border-radius: 8px;
+    background: #fafaff;
+    font-size: 15px;
+    transition: 0.3s;
+}
+
+input:focus {
+    outline: none;
+    border-color: #7955e8;
+    box-shadow: 0 0 0 3px #7955e822;
+    background: white;
+}
+
+/* ===== Buttons + Hover ===== */
+button,
+.btn {
+    display: inline-block;
+    padding: 12px 22px;
+    background: linear-gradient(135deg, #6254e7, #8e44ad);
+    color: white;
+    border: none;
+    border-radius: 9px;
+    font-size: 15px;
+    font-weight: bold;
+    text-decoration: none;
+    cursor: pointer;
+    margin: 6px 4px;
+    box-shadow: 0 4px 10px #6254e733;
+    transition: all 0.3s ease;
+}
+
+button:hover,
+.btn:hover {
+    background: linear-gradient(135deg, #ff9f43, #ff6b6b);
+    color: white;
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 7px 16px #ff6b6b55;
+}
+
+/* ===== Quiz Question Cards ===== */
+.question {
+    background: #f4f2ff;
+    padding: 18px;
+    margin: 18px 0;
+    border-radius: 12px;
+    border: 1px solid #ded8ff;
+    border-left: 5px solid #7456e8;
+    box-shadow: 0 4px 12px #4b36a015;
+    transition: 0.3s ease;
+}
+
+.question:hover {
+    background: #eae6ff;
+    transform: translateY(-2px);
+    box-shadow: 0 7px 16px #4b36a025;
+}
+
+.question p {
+    background: #dcd6ff;
+    color: #392781;
+    padding: 10px;
+    border-radius: 7px;
+    font-weight: bold;
+}
+
+.question label {
+    display: block;
+    padding: 8px 10px;
+    margin: 6px 0;
+    border-radius: 7px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.question label:hover {
+    background: #ffffff;
+    color: #5136b5;
+}
+
+.question input[type="radio"] {
+    margin-right: 8px;
+    accent-color: #6c4ce5;
+}
+
+/* ===== Timer Box ===== */
+.timer-box {
+    position: sticky;
+    top: 10px;
+    z-index: 5;
+    width: fit-content;
+    margin: 0 auto 20px;
+    padding: 12px 22px;
+    background: #fff0cf;
+    color: #9b5b00;
+    border: 2px solid #ffc65c;
+    border-radius: 10px;
+    font-weight: bold;
+    box-shadow: 0 4px 12px #0001;
+}
+
+.timer-warning {
+    background: #ffe0e0;
+    color: #bd2020;
+    border-color: #f05b5b;
+}
+
+/* ===== Result Box ===== */
+#resultBox {
+    background: #f0f8ff;
+    padding: 22px;
+    margin-top: 24px;
+    border: 1px solid #c8e4ff;
+    border-radius: 12px;
+    box-shadow: 0 4px 14px #0001;
+}
+
+#resultBox h2 {
+    background: #d7ebff;
+    color: #175b9c;
+    border-left-color: #3298dc;
+}
+
+/* ===== Answer Review ===== */
+.answer-item {
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 8px;
+}
+
+.correct-answer {
+    background: #ddf8e8;
+    color: #176638;
+    border-left: 5px solid #25a45a;
+}
+
+.wrong-answer {
+    background: #ffe4e4;
+    color: #a52222;
+    border-left: 5px solid #e34c4c;
+}
+
+/* ===== Dashboard Welcome ===== */
+.welcome {
+    background: linear-gradient(135deg, #6254e7, #9b59b6);
+    color: white;
+    padding: 25px;
+    border-radius: 14px;
+    margin-bottom: 22px;
+    box-shadow: 0 5px 15px #6254e733;
+}
+
+.welcome h2 {
+    background: #ffffff22;
+    color: white;
+    border-left-color: #ffca6a;
+}
+
+/* ===== Dashboard Cards ===== */
+.cards {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+    margin: 20px 0;
+}
+
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid #e2defc;
+    box-shadow: 0 4px 12px #0000000d;
+    transition: 0.3s ease;
+}
+
+.card:nth-child(1) {
+    border-top: 5px solid #6c5ce7;
+    background: #f2f0ff;
+}
+
+.card:nth-child(2) {
+    border-top: 5px solid #20b486;
+    background: #edfff8;
+}
+
+.card:nth-child(3) {
+    border-top: 5px solid #ff9f43;
+    background: #fff6e9;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 9px 20px #0002;
+}
+
+.card h3 {
+    font-size: 15px;
+}
+
+.card p {
+    font-size: 27px;
+    font-weight: bold;
+    margin-top: 8px;
+}
+
+/* ===== History Table ===== */
+.history {
+    margin-top: 25px;
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+}
+
+th,
+td {
+    padding: 12px;
+    border: 1px solid #e0e0ed;
+    text-align: center;
+}
+
+th {
+    background: #6654d9;
+    color: white;
+}
+
+tr:nth-child(even) {
+    background: #f4f2ff;
+}
+
+tr:hover {
+    background: #e8e4ff;
+}
+
+/* ===== Action Buttons ===== */
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+/* ===== Mobile Responsive ===== */
+@media (max-width: 650px) {
+    header h1 {
+        font-size: 22px;
+    }
+
+    nav a {
+        padding: 7px 10px;
+        font-size: 14px;
+    }
+
+    .container {
+        width: 95%;
+        padding: 15px;
+        margin: 18px auto;
+    }
+
+    .cards {
+        grid-template-columns: 1fr;
+    }
+
+    .question {
+        padding: 13px;
+    }
+
+    button,
+    .btn {
+        max-width: 100%;
+    }
+
+    th,
+    td {
+        padding: 8px 5px;
+        font-size: 12px;
+    }
+}
+/* Results Table */
+.results-container {
+    margin-top: 25px;
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px #1a003322;
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead {
+    background: linear-gradient(135deg, #1a0033, #4b0082);
+    color: white;
+}
+
+th,
+td {
+    padding: 16px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+tbody tr {
+    transition: background 0.3s ease;
+}
+
+tbody tr:hover {
+    background: #f4edff;
+}
+
+td {
+    color: #333;
+}
+
+@media (max-width: 600px) {
+    .results-container {
+        padding: 12px;
+    }
+
+    th,
+    td {
+        padding: 10px;
+        font-size: 13px;
+    }
+}
+
+/* Online Quiz System Header */
+header {
+    background: linear-gradient(135deg, #160026, #2b0750, #401078);
+    color: #ffffff;
+    padding: 25px 15px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(20, 0, 40, 0.35);
+}
+
+header h1 {
+    color: #ffffff;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+}
+
+/* Dark purple page background */
+body {
+    background: linear-gradient(135deg, #170024, #2b1245);
+    min-height: 100vh;
+}
+
+/* Dashboard content cards */
+.container {
+    background: #ffffff;
+    border-radius: 15px;
+}
+
+/* Navigation links */
+nav a {
+    color: #ffffff;
+    transition: 0.3s ease;
+}
+
+nav a:hover {
+    color: #ffd166;
+    background: #4b2670;
+    border-radius: 7px;
+}/* Full Dashboard White Background */
+body {
+    background: #ffffff !important;
+    color: #333333;
+}
+
+/* Dark Purple Header */
+header {
+    background: linear-gradient(135deg, #160026, #2b0750, #401078);
+    color: white;
+    padding: 25px 15px;
+    text-align: center;
+}
+
+header h1 {
+    color: white;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+}
+
+/* Dashboard Cards White */
+.container,
+.results-container {
+    background: #ffffff;
+}
+
+/* Buttons Hover Effect */
+button,
+.btn {
+    transition: 0.3s ease;
+}
+
+button:hover,
+.btn:hover {
+    transform: translateY(-2px);
+    opacity: 0.9;
+}header h1 {
+    color: white !important;
+}
+/* ===== Aesthetic Quiz Design ===== */
+
+body {
+    background: linear-gradient(135deg, #1a0033, #321052, #21102f);
+    font-family: "Segoe UI", Arial, sans-serif;
+    color: #2d1745;
+    margin: 0;
+    min-height: 100vh;
+}
+
+/* Main Quiz Container */
+.quiz-container,
+.container {
+    max-width: 850px;
+    margin: 35px auto;
+    padding: 30px;
+    background: #ffffff;
+    border-radius: 22px;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
+}
+
+/* Main Heading */
+h1 {
+    color: #ffffff;
+    text-align: center;
+    letter-spacing: 1px;
+}
+
+h2, h3 {
+    color: #351052;
+    margin-bottom: 18px;
+}
+
+/* Timer */
+.timer,
+#timer {
+    background: #f0e7fa;
+    color: #351052;
+    padding: 12px 20px;
+    border-radius: 12px;
+    font-weight: bold;
+    text-align: center;
+    display: inline-block;
+    border: 1px solid #dfc9f5;
+}
+
+/* Question Cards */
+.question,
+.question-card {
+    background: #ffffff;
+    padding: 22px;
+    margin: 20px 0;
+    border: 1px solid #e8ddf2;
+    border-left: 5px solid #542580;
+    border-radius: 14px;
+    box-shadow: 0 5px 18px rgba(48, 15, 75, 0.08);
+    transition: 0.3s ease;
+}
+
+.question:hover,
+.question-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 9px 24px rgba(48, 15, 75, 0.15);
+}
+
+/* Answer Options */
+label {
+    display: block;
+    padding: 12px 15px;
+    margin: 10px 0;
+    background: #f8f5fc;
+    border: 1px solid #e5d9f1;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.25s ease;
+}
+
+label:hover {
+    background: #eee2fa;
+    border-color: #7544a0;
+    transform: translateX(3px);
+}
+
+input[type="radio"] {
+    accent-color: #542580;
+    margin-right: 10px;
+}
+
+/* Buttons */
+button,
+.btn {
+    background: linear-gradient(135deg, #351052, #7040a0);
+    color: #ffffff;
+    border: none;
+    padding: 13px 25px;
+    border-radius: 11px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 12px rgba(53, 16, 82, 0.2);
+}
+
+button:hover,
+.btn:hover {
+    background: linear-gradient(135deg, #542580, #8958b5);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 18px rgba(53, 16, 82, 0.3);
+}
+
+/* Progress Bar */
+progress {
+    width: 100%;
+}
+
+header h1,
+header h2,
+.logo,
+.navbar-brand,
+.site-title {
+    color: #ffffff !important;
+}
+header h2,
+.logo,
+.navbar-brand,
+.site-title {
+    color: #ffffff !important;
+}
+/* Timer - No Box */
+.timer,
+#timer {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+    color: #351052;
+    font-weight: bold;
+    display: inline;
+}
+/* Dark Purple Timer */
+.timer,
+#timer {
+    background: #2b0750 !important;
+    color: #ffffff !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 8px 14px !important;
+    border-radius: 8px !important;
+    font-size: 14px !important;
+    font-weight: 600;
+    display: inline-block;
+}
+
+
+h1 {
+    color: #2D0A4E;
+}
+
+button {
+    background: #2D0A4E;
+    color: white;
+}
+
+button:hover {
+    background: #1A052E;
+}
+
+thead {
+    background: #2D0A4E;
+    color: white;
+}
+.site-title {
+    display: block !important;
+    color: white !important;
+    text-align: center;
+    font-size: 32px;
+    margin: 15px 0;
+    visibility: visible !important;
+}
+
+/* Time Left - Small Center Box */
+.timer,
+#timer {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+
+    background: #2b0750 !important;
+    color: white !important;
+
+    padding: 6px 12px !important;
+    font-size: 13px !important;
+    font-weight: 600;
+
+    width: fit-content;
+    margin: 10px auto !important;
+    border-radius: 6px !important;
+    display: block;
+}
+
+/* Remove Light Orange Colors */
+.timer,
+#timer {
+    background: #2b0750 !important;
+    color: white !important;
+}
+
+button,
+.btn {
+    accent-color: #351052;
+}
+
+input:focus,
+button:focus {
+    outline-color: #351052 !important;
+}
+/* Only Timer Styling */
+.timer,
+#timer {
+    background: #2b0750 !important;
+    color: white !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+
+    width: fit-content !important;
+    padding: 6px 12px !important;
+    font-size: 13px !important;
+    border-radius: 6px !important;
+
+    margin: 10px auto !important;
+    display: block !important;
+}
+
